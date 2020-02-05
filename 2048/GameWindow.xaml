@@ -1,0 +1,107 @@
+﻿<Window x:Class="_2048.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_2048"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="620" Width="450" Background="#FF362323" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown" MouseLeftButtonDown="MoveWindow" WindowStyle="None">
+    <Border BorderBrush="White" BorderThickness="6">
+        <StackPanel>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="2048"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource InfoStyle}" Text="F5 - Новая игра"/>
+                    <TextBlock Style="{StaticResource InfoStyle}" Text="Esc - Выход"/>
+                </StackPanel>
+            </Grid>
+
+
+            <Grid Width="400" Height="400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource BorderStyle}" BorderThickness="6 6 3 3" Background="{Binding Game.PlayField[0].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[0]}"/>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="0" Style="{StaticResource BorderStyle}" BorderThickness="3 6 3 3" Background="{Binding Game.PlayField[1].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[1]}"/>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource BorderStyle}" BorderThickness="3 6 3 3" Background="{Binding Game.PlayField[2].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[2]}"/>
+                </Border>
+                <Border Grid.Column="3" Grid.Row="0" Style="{StaticResource BorderStyle}" BorderThickness="3 6 6 3" Background="{Binding Game.PlayField[3].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[3]}"/>
+                </Border>
+                <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource BorderStyle}" BorderThickness="6 3 3 3" Background="{Binding Game.PlayField[4].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[4]}"/>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="1" Style="{StaticResource BorderStyle}" Background="{Binding Game.PlayField[5].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[5]}"/>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="1" Style="{StaticResource BorderStyle}" Background="{Binding Game.PlayField[6].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[6]}"/>
+                </Border>
+                <Border Grid.Column="3" Grid.Row="1" Style="{StaticResource BorderStyle}" BorderThickness="3 3 6 3" Background="{Binding Game.PlayField[7].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[7]}"/>
+                </Border>
+                <Border Grid.Column="0" Grid.Row="2" Style="{StaticResource BorderStyle}" BorderThickness="6 3 3 3" Background="{Binding Game.PlayField[8].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[8]}"/>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="2" Style="{StaticResource BorderStyle}" Background="{Binding Game.PlayField[9].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[9]}"/>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="2" Style="{StaticResource BorderStyle}" Background="{Binding Game.PlayField[10].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[10]}"/>
+                </Border>
+                <Border Grid.Column="3" Grid.Row="2" Style="{StaticResource BorderStyle}" BorderThickness="3 3 6 3" Background="{Binding Game.PlayField[11].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[11]}"/>
+                </Border>
+                <Border Grid.Column="0" Grid.Row="3" Style="{StaticResource BorderStyle}" BorderThickness="6 3 3 6" Background="{Binding Game.PlayField[12].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[12]}"/>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="3" Style="{StaticResource BorderStyle}" BorderThickness="3 3 3 6" Background="{Binding Game.PlayField[13].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[13]}"/>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="3" Style="{StaticResource BorderStyle}" BorderThickness="3 3 3 6" Background="{Binding Game.PlayField[14].BackColor}" IsEnabled="False">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[14]}"/>
+                </Border>
+                <Border Grid.Column="3" Grid.Row="3" Style="{StaticResource BorderStyle}" BorderThickness="3 3 6 6" Background="{Binding Game.PlayField[15].BackColor}">
+                    <TextBlock  Style="{StaticResource CellStyle}" Text="{Binding Game.PlayField[15]}"/>
+                </Border>
+            </Grid>
+
+            <Grid Width="400" HorizontalAlignment="Center" Margin="0 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource DefaultStyle}" Text="Очков"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource DefaultStyle}" Text="{Binding Game.Count}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="0" Style="{StaticResource DefaultStyle}" Text="Рекорд"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource DefaultStyle}" Text="{Binding Game.Record}"/>
+            </Grid>
+
+        </StackPanel>
+    </Border>
+    
+</Window>
