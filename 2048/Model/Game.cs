@@ -5,24 +5,26 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace _2048.Model
 {
     public class Game : INotifyPropertyChanged
     {
+        private readonly string SAVE_PATH = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "save.json");
+
         private int count;
         public int Count { get { return count; } set { count = value; OnPropertyChanged("Count"); } }
 
         private int record;
         public int Record { get { return record; } set { record = value; OnPropertyChanged("Record"); } }
 
-
         private bool IsMoveble = false;
 
-        Action action;
-
-        Action<int> counter;
-       
+        Action moveAction;
+        Action<int> counterAction;
+        Action<string> messageAction;
 
         private CellItem[] playField;
         public CellItem[] PlayField
@@ -35,10 +37,51 @@ namespace _2048.Model
             }
         }
 
-        public Game()
+        public Game(Action<string> message)
+        {
+            messageAction = message;
+            PlayField = new CellItem[16];
+
+            Load();
+          
+            moveAction = () => IsMoveble = true;
+
+            counterAction = (x) =>
+            {
+                Count = Count + x;
+                if (Count > Record)
+                    Record = Count;
+            }; 
+        }
+
+        public Game() { }
+        
+        private void Load()
+        {
+            if (File.Exists(SAVE_PATH))
+            {
+                try
+                {
+                    string result = File.ReadAllText(SAVE_PATH);
+                    var loadGame = JsonConvert.DeserializeObject<Game>(result);
+                    this.Count = loadGame.Count;
+                    this.Record = loadGame.Record;
+                    this.PlayField = loadGame.PlayField;
+                }
+                catch
+                {
+                    NewGame();
+                }
+            }
+            else
+            {
+                NewGame();
+            }
+        }
+
+        private void NewGame()
         {
             Count = 0;
-            PlayField = new CellItem[16];
             int k = 0;
             for (int y = 0; y < 4; y++)
             {
@@ -50,15 +93,25 @@ namespace _2048.Model
             }
             SetRandomCell();
             SetRandomCell();
+            OnPropertyChanged("PlayField");
+        }
 
-            action = () => IsMoveble = true;
-
-            counter = (x) =>
+        internal void Save()
+        {
+            try
             {
-                Count = Count + x;
-                if (Count > Record)
-                    Record = Count;
-            }; 
+                string saveInfo = JsonConvert.SerializeObject(this);
+                File.WriteAllText(SAVE_PATH, saveInfo);
+            }
+            catch (Exception ex)
+            {
+                messageAction(ex.Message);
+            }
+        }
+
+        internal void Restart()
+        {
+            NewGame();
         }
 
         internal void MoveUp()
@@ -69,12 +122,10 @@ namespace _2048.Model
                 List<CellItem> list = playField.Where(x => x.Ycoord == i).ToList();
                 foreach(var item in list)
                 {
-                    item.Merge(playField.Where(x => x.Xcoord == item.Xcoord && x.Ycoord < item.Ycoord).Reverse().ToArray(), action, counter);
+                    item.Merge(playField.Where(x => x.Xcoord == item.Xcoord && x.Ycoord < item.Ycoord).Reverse().ToArray(), moveAction, counterAction, messageAction);
                 }
             }
-            if (IsMoveble)
-                SetRandomCell();
-            OnPropertyChanged("PlayField");
+            MoveFinish();
         }
 
         internal void MoveDown()
@@ -85,12 +136,10 @@ namespace _2048.Model
                 List<CellItem> list = playField.Where(x => x.Ycoord == i).ToList();
                 foreach (var item in list)
                 {
-                    item.Merge(playField.Where(x => x.Xcoord == item.Xcoord && x.Ycoord > item.Ycoord).ToArray(), action, counter);
+                    item.Merge(playField.Where(x => x.Xcoord == item.Xcoord && x.Ycoord > item.Ycoord).ToArray(), moveAction, counterAction, messageAction);
                 }
             }
-            if (IsMoveble)
-                SetRandomCell();
-            OnPropertyChanged("PlayField");
+            MoveFinish();
         }
 
         internal void MoveLeft()
@@ -101,12 +150,10 @@ namespace _2048.Model
                 List<CellItem> list = playField.Where(x => x.Xcoord == i).ToList();
                 foreach (var item in list)
                 {
-                    item.Merge(playField.Where(x => x.Ycoord == item.Ycoord && x.Xcoord < item.Xcoord).Reverse().ToArray(), action, counter);
+                    item.Merge(playField.Where(x => x.Ycoord == item.Ycoord && x.Xcoord < item.Xcoord).Reverse().ToArray(), moveAction, counterAction, messageAction);
                 }
             }
-            if (IsMoveble)
-                SetRandomCell();
-            OnPropertyChanged("PlayField");
+            MoveFinish();
         }
 
         internal void MoveRight()
@@ -117,11 +164,19 @@ namespace _2048.Model
                 List<CellItem> list = playField.Where(x => x.Xcoord == i).ToList();
                 foreach (var item in list)
                 {
-                    item.Merge(playField.Where(x => x.Ycoord == item.Ycoord && x.Xcoord > item.Xcoord).ToArray(), action, counter);
+                    item.Merge(playField.Where(x => x.Ycoord == item.Ycoord && x.Xcoord > item.Xcoord).ToArray(), moveAction, counterAction, messageAction);
                 }
             }
+            MoveFinish();
+        }
+
+        private void MoveFinish()
+        {
             if (IsMoveble)
                 SetRandomCell();
+            if (!IsMoveble && PlayField.Where(x => x.IsEmpty).Count() == 0)
+                messageAction($"Игра закончена, вы заработали {Count} очков");
+
             OnPropertyChanged("PlayField");
         }
 
@@ -132,6 +187,7 @@ namespace _2048.Model
             if (cell != null)
                 cell.SetRandomValue();
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

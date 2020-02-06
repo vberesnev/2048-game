@@ -23,6 +23,7 @@ namespace _2048.ViewModel
             }
         }
 
+        Action<string> messageAction; 
 
         private List<CellItem> list;
         public List<CellItem> List
@@ -35,9 +36,10 @@ namespace _2048.ViewModel
             }
         }
 
-        public GameViewModel()
+        public GameViewModel(Action<string> mess)
         {
-            Game = new Game();
+            messageAction = mess;
+            Game = new Game(messageAction);
         }
 
         internal void KeyUp()
@@ -60,9 +62,14 @@ namespace _2048.ViewModel
             Game.MoveRight();
         }
 
+        internal void Save()
+        {
+            Game.Save();
+        }
+
         internal void Restart()
         {
-            Game = new Game();
+            Game.Restart();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

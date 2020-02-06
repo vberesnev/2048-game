@@ -22,48 +22,45 @@ namespace _2048
     {
         ViewModel.GameViewModel dataContext;
 
+        Action<string> showMessage;
+
         public MainWindow()
         {
             InitializeComponent();
-            dataContext = new ViewModel.GameViewModel();
+
+            showMessage = new Action<string>((x) =>
+            {
+                MessageBox.Show(x);
+            });
+
+            dataContext = new ViewModel.GameViewModel(showMessage);
             DataContext = dataContext;
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Up)
+            switch (e.Key)
             {
-                dataContext.KeyUp();
-                return;
-            }
-            
-            if (e.Key == Key.Left)
-            {
-                dataContext.KeyLeft();
-                return;
-            }
-
-            if (e.Key == Key.Down)
-            {
-                dataContext.KeyDown();
-                return;
-            }
-
-            if (e.Key == Key.Right)
-            {
-                dataContext.KeyRight();
-                return;
-            }
-
-            if (e.Key == Key.F5)
-            {
-                dataContext.Restart();
-                return;
-            }
-
-            if (e.Key == Key.Escape)
-            {
-                this.Close();
+                case Key.Up:
+                    dataContext.KeyUp();
+                    break;
+                case Key.Left:
+                    dataContext.KeyLeft();
+                    break;
+                case Key.Down:
+                    dataContext.KeyDown();
+                    break;
+                case Key.Right:
+                    dataContext.KeyRight();
+                    break;
+                case Key.F5:
+                    dataContext.Restart();
+                    break;
+                case Key.Escape:
+                    this.Visibility = Visibility.Hidden;
+                    dataContext.Save();
+                    this.Close();
+                    break;
             }
         }
 

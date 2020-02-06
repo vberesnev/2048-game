@@ -16,11 +16,11 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="2048"/>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource InfoStyle}" Text="Управление стрелками"/>
                     <TextBlock Style="{StaticResource InfoStyle}" Text="F5 - Новая игра"/>
                     <TextBlock Style="{StaticResource InfoStyle}" Text="Esc - Выход"/>
                 </StackPanel>
             </Grid>
-
 
             <Grid Width="400" Height="400">
                 <Grid.ColumnDefinitions>

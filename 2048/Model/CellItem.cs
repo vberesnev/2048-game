@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -33,19 +34,13 @@ namespace _2048.Model
             { 16, Brushes.DarkRed },
             { 17, Brushes.Sienna },
             { 18, Brushes.Brown },
-            { 19, Brushes.Black },
-            { 20, Brushes.Black },
-            { 21, Brushes.Black },
-            { 22, Brushes.Black },
-            { 23, Brushes.Black },
-            { 24, Brushes.Black },
-            { 25, Brushes.Black },
-            { 26, Brushes.Black },
-            { 27, Brushes.Black }
+            { 19, Brushes.Black }
         };
 
-
-        public int value;
+        [JsonRequired]
+        [JsonProperty("val")]
+        private int value;
+        [JsonIgnore]
         public int Value
         {
             get { return Convert.ToInt32(Math.Pow(2, value)); }
@@ -56,15 +51,22 @@ namespace _2048.Model
             }
         }
 
+        [JsonIgnore]
         public Brush BackColor
         {
             get { return colorDict[value]; }
         }
 
-
+        [JsonProperty("x")]
         public int Xcoord { get; private set; }
+        [JsonProperty("y")]
         public int Ycoord { get; private set; }
 
+        [JsonIgnore]
+        public bool IsEmpty
+        {
+            get { return value == 0; }
+        }
 
         public CellItem(int x, int y)
         {
@@ -72,13 +74,12 @@ namespace _2048.Model
             Ycoord = y;
         }
 
-        public CellItem()
+        [JsonConstructor]
+        public CellItem(int val, int x, int y)
         {
-        }
-
-        public bool IsEmpty
-        {
-            get { return value == 0; }
+            this.Value = val;
+            this.Xcoord = x;
+            this.Ycoord = y;
         }
 
         public void Plus()
@@ -86,7 +87,7 @@ namespace _2048.Model
             value++;
         }
 
-        public void Merge(CellItem[] items, Action action, Action<int> counter)
+        public void Merge(CellItem[] items, Action moveAction, Action<int> counterAction, Action<string> messageAction)
         {
             if (this.IsEmpty) return;
             CellItem tempItem = null;
@@ -103,8 +104,8 @@ namespace _2048.Model
                     {
                         items[i].Plus();
                         this.Value = 0;
-                        counter(items[i].Value);
-                        action();
+                        counterAction(items[i].Value);
+                        moveAction();
                         return;
                     }
                     break;
@@ -114,7 +115,7 @@ namespace _2048.Model
             {
                 tempItem.Value = this.value;
                 this.Value = 0;
-                action();
+                moveAction();
             }
         }
 
